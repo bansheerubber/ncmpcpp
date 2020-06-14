@@ -106,7 +106,6 @@ std::string playerStateToString(MPD::PlayerState ps)
 					result = "[playing]";
 					break;
 				case Design::Classic:
-					result = "Playing:";
 					break;
 			}
 			break;
@@ -117,7 +116,7 @@ std::string playerStateToString(MPD::PlayerState ps)
 					result = "[paused]";
 					break;
 				case Design::Classic:
-					result = "Paused:";
+					result = "(paused)";
 					break;
 			}
 			break;
@@ -624,7 +623,7 @@ void Status::Changes::elapsedTime(bool update_elapsed)
 					tracklength += boost::lexical_cast<std::string>(m_kbps);
 					tracklength += " kbps) ";
 				}
-				tracklength += "[";
+				tracklength += "";
 				if (m_total_time)
 				{
 					if (Config.display_remaining_time)
@@ -639,18 +638,22 @@ void Status::Changes::elapsedTime(bool update_elapsed)
 				}
 				else
 					tracklength += MPD::Song::ShowTime(m_elapsed_time);
-				tracklength += "]";
+				tracklength += "";
 				NC::WBuffer np_song;
 				Format::print(Config.song_status_wformat, np_song, &np);
 				*wFooter << NC::XY(0, 1)
-				         << NC::TermManip::ClearToEOL
-				         << Config.player_state_color
+				         << NC::TermManip::ClearToEOL;
+				         /*<< Config.player_state_color
 				         << ps
 				         << NC::FormattedColor::End<>(Config.player_state_color)
-				         << " ";
+				         << " ";*/
 				writeCyclicBuffer(
 					np_song, *wFooter, playing_song_scroll_begin,
 					wFooter->getWidth()-ps.length()-tracklength.length()-2, L" ** ");
+
+				*wFooter << " "
+						 << ps;
+
 				*wFooter << NC::XY(wFooter->getWidth()-tracklength.length(), 1)
 				         << Config.statusbar_time_color
 				         << tracklength
