@@ -653,9 +653,21 @@ void Status::Changes::elapsedTime(bool update_elapsed)
 
 				*wFooter << " "
 						 << ps;
+				
+				std::string flags_state;
+				flags_state += '(';
+				flags_state += m_repeat ? m_repeat : '-';
+				flags_state += m_random ? m_random : '-';
+				flags_state += m_single ? m_single : '-';
+				flags_state += m_consume ? m_consume : '-';
+				flags_state += m_crossfade ? m_crossfade : '-';
+				flags_state += m_db_updating ? m_db_updating : '-';
+				flags_state += ')';
+				flags_state += ' ';
 
-				*wFooter << NC::XY(wFooter->getWidth()-tracklength.length(), 1)
+				*wFooter << NC::XY(wFooter->getWidth()-tracklength.length()-flags_state.length(), 1)
 				         << Config.statusbar_time_color
+						 << flags_state
 				         << tracklength
 				         << NC::FormattedColor::End<>(Config.statusbar_time_color);
 			}
